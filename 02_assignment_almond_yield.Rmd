@@ -6,25 +6,57 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
 ```
 
-## R Markdown
+```{r loading the data}
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+### -----------------------
+# Loading the data
+### -----------------------
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+# reading in the text file
+data <- read.table(here("clim.txt"), header = TRUE)
 
-```{r cars}
-summary(cars)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+```{r running the function}
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+### -----------------------
+# Running the function w/ default years
+### -----------------------
+
+# sourcing the function from the R project
+source("almond_yield.R")
+
+default_anomaly <- almond_yield(climate_data = data)
+
+
+
+kableExtra::kable(default_anomaly, align = "c") |> 
+  kableExtra::kable_styling(bootstrap_options = "striped", 
+                            full_width = FALSE)
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+
+### -----------------------
+# Running the function w/ new years
+### -----------------------
+
+# sourcing the function from the R project
+source("almond_yield.R")
+
+year3_anomaly <- almond_yield(years = c(2000:2003) , climate_data = data)
+
+
+
+kableExtra::kable(year3_anomaly, align = "c") |> 
+  kableExtra::kable_styling(bootstrap_options = "striped", 
+                            full_width = FALSE)
+
+```
+
