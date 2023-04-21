@@ -598,8 +598,8 @@ Modeling</h1>
 <pre class="r"><code># reading in the text file
 data &lt;- read.table(here(&quot;clim.txt&quot;), header = TRUE)</code></pre>
 </div>
-<div id="running-the-function-w-default-years" class="section level3">
-<h3>Running the function w/ default years</h3>
+<div id="running-the-function-with-default-years" class="section level3">
+<h3>Running the function with default years</h3>
 <pre class="r"><code># sourcing the function from the R project
 source(&quot;almond_yield.R&quot;)
 
@@ -650,8 +650,8 @@ avg_anomaly
 </tbody>
 </table>
 </div>
-<div id="running-the-function-with-not-the-default-years" class="section level3">
-<h3>Running the function with not the default years</h3>
+<div id="running-the-function-years-other-than-the-default-years" class="section level3">
+<h3>Running the function years other than the default years</h3>
 <pre class="r"><code># running the function and inputting new years
 year3_anomaly &lt;- almond_yield(years = c(2000:2003), climate_data = data)
 

@@ -24,7 +24,7 @@ data <- read.table(here("clim.txt"), header = TRUE)
 
 ```
 
-### Running the function w/ default years
+### Running the function with default years
 
 ```{r running the function}
 
@@ -42,7 +42,7 @@ kableExtra::kable(default_anomaly, align = "c") |>
 
 ```
 
-### Running the function with not the default years
+### Running the function years other than the default years
 
 ```{r}
 
