@@ -1,10 +1,118 @@
 ---
-title: "Almond Profit"
-author: "Erica Bishop"
+title: "Almond Profit Sensitivity Analysis"
+author: "Erica Bishop, Colleen McCamy, Adelaide Robinson"
 date: "`r Sys.Date()`"
 output: html_document
 ---
-```{r}
-source(almond)
+
+```{r setup, include=FALSE}
+
+library(tidyverse)
+library(purrr)
+library(here)
+library(ggpubr)
+library(viridis)
+
+# reading in the text file
+data <- read.table(here("clim.txt"), header = TRUE)
+
 ```
+
+## Almond Profit Function 
+
+```{r source function}
+
+source("almond_profit.R")
+
+```
+
+Testing out the function:
+```{r testing}
+
+almond_profit() #using default values
+
+almond_profit(minT2 = 5, P1 = 120) #exploring with other values
+
+almond_profit(minT2 = 10, P1 = 0) #looking at low extremes
+
+
+```
+## Informal Sensitivity Analysis
+
+Determining sensitivity of our model based on the default parameters given in Lobell et al.'s statistical model. For now, we are just looking at two coefficients - one on precipitation, one on minimum temperature.
+
+```{r sensitivity analysis}
+#parameter
+beta_t1 <- -0.015
+beta_p1 <- .07
+
+#number of samples
+nsamples <- 300
+
+#standard deviation
+deviation <- 0.08
+
+#create normal distribution
+beta_t1 <- rnorm(n = nsamples, mean = beta_t1, sd = deviation)
+beta_p1 <- rnorm(n = nsamples, mean = beta_p1, sd = deviation)
+
+params <- cbind.data.frame(beta_t1, beta_p1)
+  
+#run function across both distributions with pmap
+
+results <- pmap(params, almond_profit)
+
+```
+
+```{r plot results}
+
+results_df <- do.call(rbind, results)
+
+results_df
+
+beta_t1_plot <- ggplot(
+  data = results_df,
+  aes(x = beta_t1,
+      y = profit,
+      col = beta_p1)
+) +
+  geom_point() +
+  theme_minimal() +
+  labs(
+    title = "Informal sensitivity analysis",
+    subtitle = "Effect of coefficient variation on almond profit",
+    x = "Linear temperature coefficient",
+    y = "Almond profit",
+    col = "Precip coef."
+  ) +
+  scale_color_viridis_c(option = "magma")
+  
+
+# beta_t1_plot
+  
+  
+beta_p1_plot <- ggplot(
+  data = results_df,
+  aes(x = beta_p1,
+      y = profit,
+      col = beta_t1)
+) +
+  geom_point() +
+  theme_minimal() +
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank()
+  ) +
+  labs(
+    col = "Temp coef.",
+    x = "Linear precipitation coefficient"
+  )
+
+# beta_p1_plot
+
+ggarrange(beta_t1_plot, beta_p1_plot, ncol = 2)
+
+```
+
+Looking at the relationship between almond profit and the coefficients, the precipitation coefficient (beta_p1) appears to have a much stronger influence on almond profit.
 
